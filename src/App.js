@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect } from 'react';
+import { Provider, useDispatch } from 'react-redux';
+import { createStore } from 'redux';
 import './App.css';
 
 import PokemonFilter from './components/PokemonFilter.jsx';
 import PokemonInfo from './components/PokemonInfo.jsx';
 import PokemonTable from './components/PokemonTable.jsx';
-import PokemonContext from './PokemonContext';
 
 const Title = styled.h1`
   text-align: center;
@@ -23,10 +24,16 @@ const Container = styled.div`
   padding-top: "1rem";
 `;
 
-const PokemonReducer = (state, action) => {
+const pokemonReducer = (state = {
+  pokemon: [],
+  filter: "",
+  selectedPokemon: null
+}, action) => {
   switch (action.type) {
     case "SET_POKEMON":
       return {
+
+        // Returns a new object with an attr modified
         ...state,
         pokemon: action.payload
       };
@@ -41,16 +48,14 @@ const PokemonReducer = (state, action) => {
         selectedPokemon: action.payload
       };
     default:
-      throw new Error("Unknown action");
+      return state;
   }
 }
 
-export default function App() {
-  const [state, dispatch] = useReducer(PokemonReducer, {
-    pokemon: [],
-    filter: "",
-    selectedPokemon: null
-  });
+const store = createStore(pokemonReducer);
+
+function App() {
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetch("http://localhost:3000/my-app/pokemon.json").
@@ -62,25 +67,24 @@ export default function App() {
   }, []);
 
   return (
+    <Container>
+      <Title>Pokemon search</Title>
+      <TwoColumnLayout>
+        <div>
+          <PokemonFilter />
+          <PokemonTable />
+        </div>
 
-    // Using a global context instead of props drilling
-    <PokemonContext.Provider
-
-      // Variables to share using context. See use example in PokemonFilter
-      value={{ state, dispatch }}
-    >
-      <Container>
-        <Title>Pokemon search</Title>
-        <TwoColumnLayout>
-          <div>
-            <PokemonFilter />
-            <PokemonTable />
-          </div>
-
-          {/* Rendering a pokemon info using the short-circuit operator */}
-          <PokemonInfo />
-        </TwoColumnLayout>
-      </Container>
-    </PokemonContext.Provider>
+        {/* Rendering a pokemon info using the short-circuit operator */}
+        <PokemonInfo />
+      </TwoColumnLayout>
+    </Container>
   );
 }
+
+/* Wappring App as it cannot both provide and use the store */
+export default () => (
+  <Provider store={store}>
+    <App />
+  </Provider>
+);

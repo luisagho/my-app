@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
-import { useContext } from 'react';
-import PokemonContext from '../PokemonContext.js';
-import PokemonRow from './PokemonRow.jsx'
+import { useDispatch, useSelector } from 'react-redux';
+import PokemonRow from './PokemonRow.jsx';
 
 const Th = styled.th`
   text-align: left;
@@ -10,7 +9,9 @@ const Th = styled.th`
 
 /* Renders a pokemon table */
 const PokemonTable = () => {
-  const { state: { pokemon, filter }, dispatch } = useContext(PokemonContext);
+  const pokemon = useSelector(state => state.pokemon);
+  const filter = useSelector(state => state.filter);
+  const dispatch = useDispatch();
   return (
     <table width="100%">
       <thead>
