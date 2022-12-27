@@ -49,15 +49,12 @@ export default function App() {
         <Title>Pokemon search</Title>
         <TwoColumnLayout>
           <div>
-            <PokemonFilter
-              value={filter}
-              handleOnChange={handleOnChange}
-            />
-            <PokemonTable pokemon={pokemon} filter={filter} handleOnClick={handleOnClick} />
+            <PokemonFilter />
+            <PokemonTable />
           </div>
 
           {/* Rendering a pokemon info using the short-circuit operator */}
-          <PokemonInfo {...selectedPokemon} />
+          <PokemonInfo />
         </TwoColumnLayout>
       </Container>
     </PokemonContext.Provider>
