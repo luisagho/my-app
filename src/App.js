@@ -1,6 +1,34 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
-import pokemon from "./pokemon.json";
+import styled from '@emotion/styled';
+import { Button } from '@mui/material';
+
+const Title = styled.h1`
+  text-align: center;
+`;
+
+const Th = styled.th`
+  text-align: left;
+  font-size: large;
+`;
+
+const TwoColumnLayout = styled.div`
+  display: grid;
+  grid-template-columns: 70% 30%;
+  column-gap: 1rem;
+`;
+
+const Container = styled.div`
+  margin: auto;
+  width: 800px;
+  padding-top: "1rem";
+`;
+
+const Input = styled.input`
+  width: 100%;
+  font-size: x-large;
+  padding: 0.2rem;
+`;
 
 /* Renders an entry in the pokemon table */
 const PokemonRow = ({ pokemon, handleOnClick }) => (
@@ -10,9 +38,11 @@ const PokemonRow = ({ pokemon, handleOnClick }) => (
     {/* Joining array of types */}
     <td>{pokemon.type.join(", ")}</td>
     <td>
-      <button onClick={() => handleOnClick(pokemon)}>
+      <Button
+        onClick={() => handleOnClick(pokemon)}
+        variant="contained">
         Select
-      </button>
+      </Button>
     </td>
   </tr>
 );
@@ -43,20 +73,27 @@ export default function App() {
   const [selectedPokemon, setSelectedPokemon] = useState(null);
   const handleOnClick = (pokemon) => setSelectedPokemon(pokemon);
 
+  const [pokemon, setPokemon] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:3000/my-app/pokemon.json").
+      then(response => response.json()).
+      then(data => setPokemon(data));
+  }, []);
+
   return (
-    <div className='container'>
-      <h1 className='title'>Pokemon search</h1>
-      <div className='table'>
+    <Container>
+      <Title>Pokemon search</Title>
+      <TwoColumnLayout>
         <div>
-          <input
+          <Input
             value={filter}
             onChange={event => handleOnChange(event.target.value)}
           />
           <table width="100%">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Type</th>
+                <Th>Name</Th>
+                <Th>Type</Th>
               </tr>
             </thead>
             <tbody> {
@@ -79,7 +116,7 @@ export default function App() {
 
         {/* Rendering a pokemon info using the short-circuit operator */}
         {selectedPokemon && <PokemonInfo {...selectedPokemon} />}
-      </div>
-    </div>
+      </TwoColumnLayout>
+    </Container>
   );
 }
