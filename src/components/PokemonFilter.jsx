@@ -1,4 +1,6 @@
+import { useContext } from 'react';
 import styled from '@emotion/styled';
+import PokemonContext from '../PokemonContext';
 
 const Input = styled.input`
   width: 100%;
@@ -7,11 +9,17 @@ const Input = styled.input`
 `;
 
 /* Renders a search filter */
-const PokemonFilter = ({ filter, handleOnChange }) => (
-  <Input
-    value={filter}
-    onChange={event => handleOnChange(event.target.value)}
-  />
-);
+const PokemonFilter = () => {
+
+  // First change the arrow function to a regular function with return value
+  // Then call the global context using deconstruction 
+  const { filter, handleOnChange } = useContext(PokemonContext);
+  return (
+    <Input
+      value={filter}
+      onChange={event => handleOnChange(event.target.value)}
+    />
+  );
+}
 
 export default PokemonFilter;

@@ -5,6 +5,7 @@ import './App.css';
 import PokemonFilter from './components/PokemonFilter.jsx';
 import PokemonInfo from './components/PokemonInfo.jsx';
 import PokemonTable from './components/PokemonTable.jsx';
+import PokemonContext from './PokemonContext';
 
 const Title = styled.h1`
   text-align: center;
@@ -37,20 +38,28 @@ export default function App() {
   }, []);
 
   return (
-    <Container>
-      <Title>Pokemon search</Title>
-      <TwoColumnLayout>
-        <div>
-          <PokemonFilter
-            value={filter}
-            handleOnChange={handleOnChange}
-          />
-          <PokemonTable pokemon={pokemon} filter={filter} handleOnClick={handleOnClick} />
-        </div>
 
-        {/* Rendering a pokemon info using the short-circuit operator */}
-        {selectedPokemon && <PokemonInfo {...selectedPokemon} />}
-      </TwoColumnLayout>
-    </Container>
+    // Using a global context instead of props drilling
+    <PokemonContext.Provider
+
+      // Variables to share using context. See use example in PokemonFilter
+      value={{ filter, handleOnChange, selectedPokemon, handleOnClick, pokemon }}
+    >
+      <Container>
+        <Title>Pokemon search</Title>
+        <TwoColumnLayout>
+          <div>
+            <PokemonFilter
+              value={filter}
+              handleOnChange={handleOnChange}
+            />
+            <PokemonTable pokemon={pokemon} filter={filter} handleOnClick={handleOnClick} />
+          </div>
+
+          {/* Rendering a pokemon info using the short-circuit operator */}
+          <PokemonInfo {...selectedPokemon} />
+        </TwoColumnLayout>
+      </Container>
+    </PokemonContext.Provider>
   );
 }
