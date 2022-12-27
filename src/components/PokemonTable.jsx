@@ -10,7 +10,7 @@ const Th = styled.th`
 
 /* Renders a pokemon table */
 const PokemonTable = () => {
-  const { pokemon, filter, handleOnClick } = useContext(PokemonContext);
+  const { state: { pokemon, filter }, dispatch } = useContext(PokemonContext);
   return (
     <table width="100%">
       <thead>
@@ -30,7 +30,10 @@ const PokemonTable = () => {
 
               // Elements from a lists must have a key
               key={pokemon.id}
-              handleOnClick={handleOnClick}
+              handleOnClick={() => dispatch({
+                type: "SET_SELECTED_POKEMON",
+                payload: pokemon
+              })}
             />
           )}
       </tbody>

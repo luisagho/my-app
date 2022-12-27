@@ -11,7 +11,7 @@ const PokemonRow = ({ pokemon, handleOnClick }) => (
       <Button
         onClick={() => handleOnClick(pokemon)}
         variant="contained">
-        Select
+        SHOW INFO
       </Button>
     </td>
   </tr>

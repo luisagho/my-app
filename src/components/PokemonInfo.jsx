@@ -3,7 +3,7 @@ import PokemonContext from "../PokemonContext";
 
 /* Rendes a table with a pokemon stats */
 const PokemonInfo = () => {
-  const { selectedPokemon } = useContext(PokemonContext);
+  const { state: { selectedPokemon } } = useContext(PokemonContext);
 
   // Renders a pokemon info only if it's selected
   return selectedPokemon ? (

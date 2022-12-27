@@ -11,13 +11,15 @@ const Input = styled.input`
 /* Renders a search filter */
 const PokemonFilter = () => {
 
-  // First change the arrow function to a regular function with return value
-  // Then call the global context using deconstruction 
-  const { filter, handleOnChange } = useContext(PokemonContext);
+  // Calling the global context using deconstruction 
+  const { state: { filter }, dispatch } = useContext(PokemonContext);
   return (
     <Input
       value={filter}
-      onChange={event => handleOnChange(event.target.value)}
+      onChange={event => dispatch({
+        type: "SET_FILTER",
+        payload: event.target.value
+      })}
     />
   );
 }

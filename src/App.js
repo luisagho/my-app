@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import './App.css';
 
 import PokemonFilter from './components/PokemonFilter.jsx';
@@ -23,18 +23,42 @@ const Container = styled.div`
   padding-top: "1rem";
 `;
 
+const PokemonReducer = (state, action) => {
+  switch (action.type) {
+    case "SET_POKEMON":
+      return {
+        ...state,
+        pokemon: action.payload
+      };
+    case "SET_FILTER":
+      return {
+        ...state,
+        filter: action.payload
+      };
+    case "SET_SELECTED_POKEMON":
+      return {
+        ...state,
+        selectedPokemon: action.payload
+      };
+    default:
+      throw new Error("Unknown action");
+  }
+}
+
 export default function App() {
-  const [filter, setFilter] = useState("");
-  const handleOnChange = (value) => setFilter(value);
+  const [state, dispatch] = useReducer(PokemonReducer, {
+    pokemon: [],
+    filter: "",
+    selectedPokemon: null
+  });
 
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
-  const handleOnClick = (pokemon) => setSelectedPokemon(pokemon);
-
-  const [pokemon, setPokemon] = useState([]);
   useEffect(() => {
     fetch("http://localhost:3000/my-app/pokemon.json").
       then(response => response.json()).
-      then(data => setPokemon(data));
+      then(data => dispatch({
+        type: "SET_POKEMON",
+        payload: data
+      }));
   }, []);
 
   return (
@@ -43,7 +67,7 @@ export default function App() {
     <PokemonContext.Provider
 
       // Variables to share using context. See use example in PokemonFilter
-      value={{ filter, handleOnChange, selectedPokemon, handleOnClick, pokemon }}
+      value={{ state, dispatch }}
     >
       <Container>
         <Title>Pokemon search</Title>
